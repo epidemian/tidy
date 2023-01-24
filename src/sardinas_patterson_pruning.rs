@@ -1,10 +1,10 @@
 use std::collections::HashSet;
 
-// Return a Vector of words that "caused" the Sardinas-
-// Patterson algorithm to determine that this list was not
-// uniquely decodable.
-// These "offending" words can then be removed from the original
-// list to, theoretically, make the list uniquely decodable.
+/// Return a Vector of words that "caused" the Sardinas-
+/// Patterson algorithm to determine that this list was not
+/// uniquely decodable.
+/// These "offending" words can then be removed from the original
+/// list to, theoretically, make the list uniquely decodable.
 pub fn get_sardinas_patterson_final_intersection(c: &[String]) -> Vec<String> {
     // Right off the bat, convert inputted Slice to a HashSet
     // Since we always want this list to be unique, and we're
@@ -33,7 +33,7 @@ fn vec_to_hash(v: &[String]) -> HashSet<String> {
     my_hash
 }
 
-// Generate c for any number n
+/// Generate c for any number n
 fn generate_cn(c: &HashSet<String>, n: usize) -> HashSet<String> {
     if n == 0 {
         return c.to_owned();
@@ -44,16 +44,19 @@ fn generate_cn(c: &HashSet<String>, n: usize) -> HashSet<String> {
         let cn_minus_1 = generate_cn(c, n - 1);
         for w1 in c.iter() {
             for w2 in cn_minus_1.iter() {
-                if w1.len() > w2.len() && w1.starts_with(w2) {
-                    // w2 is a prefix word of w1
-                    // so, we're going to add the dangling suffix to a new HashSet
+                // Find dangling prefixes
+                // We use dangling prefixes rather than suffixes because, at least with
+                // English words, this procedure preserves more words in most cases
+                if w1.len() > w2.len() && w1.ends_with(w2) {
+                    // w2 is a suffix word of w1
+                    // so, we're going to add the dangling prefix to a new HashSet
                     // called cn
-                    cn.insert(w1[w2.len()..].to_string());
-                } else if w1.len() < w2.len() && w2.starts_with(w1) {
-                    // w2 is a prefix word of w1
-                    // so, we're going to add the dangling suffix to a new HashSet
+                    cn.insert(w1[..w2.len() + 1].to_string());
+                } else if w1.len() < w2.len() && w2.ends_with(w1) {
+                    // w2 is a suffix word of w1
+                    // so, we're going to add the dangling prefix to a new HashSet
                     // called cn
-                    cn.insert(w2[w1.len()..].to_string());
+                    cn.insert(w2[..w1.len() + 1].to_string());
                 }
             }
         }
