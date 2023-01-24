@@ -104,7 +104,16 @@ pub fn guarantee_maximum_prefix_length(
 /// by removing the fewest number of code words possible. Adapted from
 /// Sardinas-Patterson algorithm.
 pub fn schlinkert_prune(list: &[String]) -> Vec<String> {
-    let offenders_to_remove = get_sardinas_patterson_final_intersection(list);
+    let mut list_with_reversed_words = vec![];
+    for word in list {
+        list_with_reversed_words.push(word.chars().rev().collect::<String>());
+    }
+    let offenders_to_remove_reversed =
+        get_sardinas_patterson_final_intersection(&list_with_reversed_words);
+    let mut offenders_to_remove = vec![];
+    for offender_reverse in offenders_to_remove_reversed {
+        offenders_to_remove.push(offender_reverse.chars().rev().collect::<String>());
+    }
     let mut new_list = list.to_owned();
     new_list.retain(|x| !offenders_to_remove.contains(x));
     new_list

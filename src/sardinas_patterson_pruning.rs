@@ -47,16 +47,16 @@ fn generate_cn(c: &HashSet<String>, n: usize) -> HashSet<String> {
                 // Find dangling prefixes
                 // We use dangling prefixes rather than suffixes because, at least with
                 // English words, this procedure preserves more words in most cases
-                if w1.len() > w2.len() && w1.ends_with(w2) {
+                if w1.len() > w2.len() && w1.starts_with(w2) {
                     // w2 is a suffix word of w1
                     // so, we're going to add the dangling prefix to a new HashSet
                     // called cn
-                    cn.insert(w1[..w2.len() + 1].to_string());
-                } else if w1.len() < w2.len() && w2.ends_with(w1) {
+                    cn.insert(w1[w2.len()..].to_string());
+                } else if w1.len() < w2.len() && w2.starts_with(w1) {
                     // w2 is a suffix word of w1
                     // so, we're going to add the dangling prefix to a new HashSet
                     // called cn
-                    cn.insert(w2[..w1.len() + 1].to_string());
+                    cn.insert(w2[w1.len()..].to_string());
                 }
             }
         }
